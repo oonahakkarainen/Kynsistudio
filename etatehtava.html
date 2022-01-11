@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <title>Kynsistudio Timantti</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="css/etatehtava.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap" rel="stylesheet">
+</head>
+
+<body class="">
+    <!-- nav -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand varaa" href="varauslomake.html">AJANVARAUS</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="etatehtava.html">Etusivu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="etatehtava2.html">Palvelut</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="etatehtava3.html">Hinnasto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="etatehtava4.html">Galleria</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Info
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="etatehtava5.html">Studiomme</a>
+                            <a class="dropdown-item" href="etatehtava6.html">Inspiraatio</a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- header -->
+    <header class="">
+        <div class="etusivu">
+            <br><br>
+            <h1>KYNSISTUDIO TIMANTTI</h1>
+            <h5>Lämminhenkinen ja ammattitaitoinen kynsistudio Helsingin sydämessä.</h5>
+            <div class="" id=""> </div>
+            <div class="chat">
+                <button class="open-button" onclick="openForm()">Chat</button>
+
+                <div class="form-popup" id="myForm">
+                    <form action="/action_page.php" class="form-container">
+                        <h2>Laita meille viestiä</h2>
+
+                        <div class="row">
+
+                            <div class="column chat">
+                                <div class="item1">
+
+
+                                    <form>
+                                        Nimi:
+                                        <br>
+                                        <input type="text" id="nimi" required>
+                                        <br>
+                                        Viesti:
+                                        <br>
+                                        <textarea id="viesti" required></textarea>
+                                        <br>
+                                        <br>
+                                        <button onclick="laheta()">Lähetä</button>
+                                        <br>
+                                        <br>
+                                </div>
+                                <div class="item2">
+                                    Viestit:
+                                    <div id="viestiketju"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button type="button" class="sulje" onclick="closeForm()">Poistu</button>
+
+                    </form>
+                    </form>
+                    <!-- The core Firebase JS SDK is always required and must be listed first -->
+                    <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase-app.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase-database.js"></script>
+
+                    <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
+                    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-analytics.js"></script>
+                    <script>
+                        function openForm() {
+                            document.getElementById("myForm").style.display = "block";
+                        }
+
+                        function closeForm() {
+                            document.getElementById("myForm").style.display = "none";
+                        }
+
+                        // CHatti
+                        var firebaseConfig = {
+                            apiKey: "AIzaSyDicrrZHCTF3BcfB9ooyFx8SEuhKt2iWQk",
+                            authDomain: "chatti-524d8.firebaseapp.com",
+                            databaseURL: "https://chatti-524d8.firebaseio.com",
+                            projectId: "chatti-524d8",
+                            storageBucket: "chatti-524d8.appspot.com",
+                            messagingSenderId: "863785804164",
+                            appId: "1:863785804164:web:46334a1f8128fcf4a1bdd1",
+                            measurementId: "G-HL8ZYYSF04"
+                        };
+                        // Initialize Firebase
+                        firebase.initializeApp(firebaseConfig);
+                        firebase.analytics();
+
+
+                        //funktio
+                        function laheta() {
+                            var lahettaja = document.getElementById("nimi").value;
+                            var teksti = document.getElementById("viesti").value;
+                            var firebaseRef = firebase.database().ref();
+                            //JSON muoto    
+                            firebaseRef.child("viestisi").push().set({
+                                nimi: lahettaja,
+                                viesti: teksti
+                            })
+                        }
+                        //viestit ketjun alle
+                        var rootRef = firebase.database().ref().child('viestisi');
+                        rootRef.on('child_added', snap => {
+                            var viesti = snap.child("viesti").val();
+                            var nimi = snap.child("nimi").val();
+                            $("#viestiketju").append("<p><b>" + nimi + ":</b> " + viesti + "</p>");
+                        });
+                    </script>
+                </div>
+            </div>
+            <br>
+        </div>
+    </header>
+
+    <footer class="">
+        <div class="container" id="tietoja">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marked-alt text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Osoitteessa</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50"><a href="https://goo.gl/maps/Do9J4KtwXbhTUdWz9">Simonkatu 9, 00100 Helsinki</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-envelope text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Ota yhteyttä</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50">
+                                <a href="">studiotimantti@kynnet.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-envelope text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Soita</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50">
+                                <a href="">040 123456789</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        &copy; Kynsistudio Timantti 2020
+    </footer>
+
+</body>
+</html>
